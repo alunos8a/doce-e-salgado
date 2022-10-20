@@ -4,9 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  // {path: '', component: HomeComponent},
+  {path: '', component: HomeComponent},
   {
-    path: '',
+    path: 'game',
     loadChildren: () => import('./game/game.module').then(m => m.GameModule)
   },
 ];

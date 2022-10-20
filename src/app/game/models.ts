@@ -8,6 +8,9 @@ export interface Player {
   player: number;
   type: number;
   direction: string;
+  running: boolean;
+  jumping: boolean;
+  positionJump: Position
   lastKeyPress: string;
   life: number;
   extraLife: number;

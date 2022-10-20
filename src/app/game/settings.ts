@@ -1,7 +1,6 @@
-export const VELOCITY = 1;
+export const VELOCITY = 10;
 export const PLAYER_DIMENSION = {width: 40, height: 100};
 export const DIRECTIONS = ['right', 'left'];
-export const MOVEMENT_KEYS = {
-  player1: ['a', 's', 'd', 'w'],
-  player2: ['arrowup','arrowleft', 'arrowright','arrowdown']
-};
+export const GRAVITY = 10;
+export const TIME_GRAVITY = 1000/60;
+
