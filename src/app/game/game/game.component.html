@@ -14,7 +14,23 @@
     </div>
 
     <div class="game">
-      <canvas #game class="canvas" width="750" height="500"></canvas>
+      <div>
+        <canvas #game class="canvas" width="750" height="500"></canvas>
+      </div>
+      <div class="modal" *ngIf="!play">
+        <div class="modal-content">
+          <div>
+            <h1>DOCE E SALGADO</h1>
+          </div>
+          <div>engrenagem</div>
+          <div>
+            <div class="play" (click)="playPause()">play</div>
+          </div>
+          <div>
+            ilustracçoes
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="info">
