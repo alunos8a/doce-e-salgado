@@ -1,4 +1,4 @@
-import { GRAVITY, TIME_GRAVITY } from './../settings';
+import { GRAVITY, TIME_GRAVITY, FIGURE_DIMENSION, SPRITE_POSITION1 } from './../settings';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Player } from '../models';
 import { PLAYER_DIMENSION, VELOCITY } from '../settings';
@@ -13,8 +13,9 @@ type MovementKeys = {
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  player1 = {player: 1, direction: 'right', running: false, jumping: false} as Player;
-  player2 = {player: 2, direction: 'left', running: false, jumping: false} as Player;
+  sprites = new Image();
+  player1 = {player: 1, direction: 'right', running: false, jumping: false, spriteNumber: 0} as Player;
+  player2 = {player: 2, direction: 'left', running: false, jumping: false, spriteNumber: 0} as Player;
   play = false;
   positionsInterval: any;
 
@@ -62,6 +63,7 @@ export class GameComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.sprites.src = '/assets/img/SPRITES.png'
     this.context = this.game.nativeElement.getContext('2d');
     let maxX = this.game.nativeElement.width - PLAYER_DIMENSION.width;
     let maxY = this.game.nativeElement.height - PLAYER_DIMENSION.height;
@@ -69,6 +71,20 @@ export class GameComponent implements OnInit {
     this.player1.positionJump = this.player1.position;
     this.player2.position = {x: Math.floor(Math.random() * maxX), y: Math.floor(Math.random() * maxY)};
     this.player2.positionJump = this.player2.position;
+  }
+
+  loop() {
+    requestAnimationFrame(this.loop)
+  }
+
+  drawPlayer(player: Player) {
+    this.context.drawImage(
+      this.sprites,
+      5 + SPRITE_POSITION1[player.spriteNumber], 8,
+      FIGURE_DIMENSION.width, FIGURE_DIMENSION.height,
+      player.position.x, player.position.y,
+      PLAYER_DIMENSION.width, PLAYER_DIMENSION.height
+    );
   }
 
 
@@ -89,9 +105,6 @@ export class GameComponent implements OnInit {
   }
 
   setDirection(key: string) {
-    console.log('this.setDirection');
-    console.log(this.player1);
-    console.log(this.player2);
     if (key in this.movementKeysPlayer1) {
       this.player1.lastKeyPress = key;
       this.player1.running = true;
@@ -127,7 +140,6 @@ export class GameComponent implements OnInit {
     }
   }
 
-  // gravity(player1: Player, player2: Player) {
   gravity() {
     if (this.player1.position.y < this.game.nativeElement.height - PLAYER_DIMENSION.height) {
       this.player1.position.y += GRAVITY;
@@ -135,7 +147,6 @@ export class GameComponent implements OnInit {
     if (this.player2.position.y < this.game.nativeElement.height  - PLAYER_DIMENSION.height) {
       this.player2.position.y += GRAVITY;
     }
-    this.draw();
   }
 
   running() {
@@ -170,11 +181,7 @@ export class GameComponent implements OnInit {
 
   draw() {
     this.context.clearRect(0, 0, this.game.nativeElement.width, this.game.nativeElement.height);
-
-    this.context.fillStyle = "rgb(200,0,0)";
-    this.context.fillRect(this.player1.position.x, this.player1.position.y, PLAYER_DIMENSION.width, PLAYER_DIMENSION.height);
-
-    this.context.fillStyle = "rgba(0, 0, 200, 0.5)";
-    this.context.fillRect(this.player2.position.x, this.player2.position.y,  PLAYER_DIMENSION.width, PLAYER_DIMENSION.height);
+    this.drawPlayer(this.player1)
+    this.drawPlayer(this.player2)
   }
 }
