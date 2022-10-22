@@ -3,15 +3,20 @@ export interface Position {
   y: number;
 }
 
+interface Direction {
+  x: string;
+  y: string;
+}
+
 export interface Player {
   name: string;
   player: number;
-  type: number;
-  direction: string;
+  type: string;
+  direction: Direction;
   running: boolean;
   jumping: boolean;
   spriteNumber: number;
-  positionJump: Position;
+  positionJumpY: number;
   lastKeyPress: string;
   life: number;
   extraLife: number;
