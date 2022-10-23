@@ -90,32 +90,31 @@ export class GameComponent implements OnInit {
     let maxY = this.game.nativeElement.height - PLAYER_DIMENSION.height;
     this.player1.position = {x: Math.floor(Math.random() * maxX), y: Math.floor(Math.random() * maxY)};
     this.player2.position = {x: Math.floor(Math.random() * maxX), y: Math.floor(Math.random() * maxY)};
+    this.loop();
   }
 
   playPause() {
     this.play = !this.play
-    if (this.play){
-      this.positionsInterval = setInterval(() => this.loop(), TIME_GRAVITY);
-    } else {
-      clearInterval(this.positionsInterval);
-    }
+    // if (this.play){
+    //   this.positionsInterval = setInterval(() => this.loop(), TIME_GRAVITY);
+    // } else {
+    //   clearInterval(this.positionsInterval);
+    // }
   }
 
   loop() {
     this.gravity();
-    this.running();
-    this.jumping();
+    this.refreshPositions();
     this.draw();
+    window.requestAnimationFrame(this.loop.bind(this));
   }
 
   getDirection(key: string) {
-    let player: Player;
-    let direction: string;
     if (key in this.movementKeysPlayer1) {
-      direction = this.movementKeysPlayer1[key];
+      let direction = this.movementKeysPlayer1[key];
       this.setDirection(this.player1, direction);
     } else if (key in this.movementKeysPlayer2) {
-      direction = this.movementKeysPlayer2[key];
+      let direction = this.movementKeysPlayer2[key];
       this.setDirection(this.player2, direction);
     }
   }
@@ -153,17 +152,15 @@ export class GameComponent implements OnInit {
     }
   }
 
-  running() {
-    this.setPositionX(this.player1);
-    this.setPositionX(this.player2);
+  refreshPositions() {
+    this.setPlayerPositionX(this.player1);
+    this.setPlayerPositionY(this.player1);
+
+    this.setPlayerPositionX(this.player2);
+    this.setPlayerPositionY(this.player2);
   }
 
-  jumping() {
-    this.setPositionY(this.player1);
-    this.setPositionY(this.player2);
-  }
-
-  setPositionX(player: Player){
+  setPlayerPositionX(player: Player){
     if (player.running || player.jumping) {
       let position = player.position.x;
       if (player.direction.x == 'right') {
@@ -179,7 +176,7 @@ export class GameComponent implements OnInit {
     }
   }
 
-  setPositionY(player: Player) {
+  setPlayerPositionY(player: Player) {
     if (player.jumping) {
       if (player.direction.y == 'up') {
         player.position.y -= VELOCITY + 2*GRAVITY;
