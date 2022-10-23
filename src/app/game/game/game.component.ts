@@ -83,8 +83,8 @@ export class GameComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.sprites.src = '/assets/img/SPRITES.png';
-    this.cenarios.src = '/assets/img/CENARIOS.png';
+    this.sprites.src = './assets/img/SPRITES.png';
+    this.cenarios.src = './assets/img/CENARIOS.png';
     this.context = this.game.nativeElement.getContext('2d');
     let maxX = this.game.nativeElement.width - PLAYER_DIMENSION.width;
     let maxY = this.game.nativeElement.height - PLAYER_DIMENSION.height;
