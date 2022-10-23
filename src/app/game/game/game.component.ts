@@ -18,7 +18,7 @@ export class GameComponent implements OnInit {
   cenarios = new Image();
   player1 = {
     name: '',
-    player: 1,
+    player: 0,
     type: 'doce',
     direction: {x:'right', y:'down'},
     running: false,
@@ -33,7 +33,7 @@ export class GameComponent implements OnInit {
 
   player2 = {
     name: '',
-    player: 2,
+    player: 1,
     type: 'salgado',
     direction: {x:'left', y:'down'},
     running: false,
@@ -182,7 +182,7 @@ export class GameComponent implements OnInit {
   setPositionY(player: Player) {
     if (player.jumping) {
       if (player.direction.y == 'up') {
-        player.position.y -= VELOCITY + GRAVITY;
+        player.position.y -= VELOCITY + 2*GRAVITY;
       }
 
       if (player.position.y <= player.positionJumpY - JUMP_HEIGHT) {
@@ -216,9 +216,10 @@ export class GameComponent implements OnInit {
   }
 
   drawPlayer(player: Player) {
+    let y = 'y';
     this.context.drawImage(
       this.sprites,
-      FIGURE_POSITIONS[player.direction.x][player.spriteNumber], 8,
+      FIGURE_POSITIONS[player.direction.x][player.spriteNumber], FIGURE_POSITIONS['y'][player.player],
       FIGURE_DIMENSION.width, FIGURE_DIMENSION.height,
       player.position.x, player.position.y,
       PLAYER_DIMENSION.width, PLAYER_DIMENSION.height
