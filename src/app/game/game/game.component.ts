@@ -1,4 +1,5 @@
-import { GRAVITY, TIME_GRAVITY, FIGURE_DIMENSION, SPRITE_POSITION1, JUMP_HEIGHT } from './../settings';
+import { Position } from './../models';
+import { GRAVITY, TIME_GRAVITY, FIGURE_DIMENSION, FIGURE_POSITIONS, JUMP_HEIGHT, FIGURE_STEP, FIGURE_QT, CENARIO } from './../settings';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Player } from '../models';
 import { PLAYER_DIMENSION, VELOCITY } from '../settings';
@@ -14,6 +15,7 @@ type MovementKeys = {
 })
 export class GameComponent implements OnInit {
   sprites = new Image();
+  cenarios = new Image();
   player1 = {
     name: '',
     player: 1,
@@ -61,21 +63,11 @@ export class GameComponent implements OnInit {
     if (this.play) {
       this.stopMovement(key);
     }
-    console.log('keyup', key);
-  }
-
-  @HostListener('document:load') onLoad = () => {
-    this.gravity();
-    this.running();
-    this.jumping();
-    this.draw();
   }
 
   @ViewChild('game', {static: true})
   private game: ElementRef<HTMLCanvasElement> = {} as ElementRef;
   private context: any;
-
-
 
   movementKeysPlayer1: MovementKeys = {
     a: 'left',
@@ -88,11 +80,11 @@ export class GameComponent implements OnInit {
     arrowup: 'up',
   }
 
-  teste = 0
   constructor() {}
 
   ngOnInit(): void {
-    this.sprites.src = '/assets/img/SPRITES.png'
+    this.sprites.src = '/assets/img/SPRITES.png';
+    this.cenarios.src = '/assets/img/CENARIOS.png';
     this.context = this.game.nativeElement.getContext('2d');
     let maxX = this.game.nativeElement.width - PLAYER_DIMENSION.width;
     let maxY = this.game.nativeElement.height - PLAYER_DIMENSION.height;
@@ -100,25 +92,20 @@ export class GameComponent implements OnInit {
     this.player2.position = {x: Math.floor(Math.random() * maxX), y: Math.floor(Math.random() * maxY)};
   }
 
-  loop() {
-    requestAnimationFrame(this.loop)
-  }
-
   playPause() {
     this.play = !this.play
     if (this.play){
-      this.positionsInterval = setInterval(
-        () => {
-          this.gravity();
-          this.running();
-          this.jumping();
-          this.draw()
-        },
-        TIME_GRAVITY
-      )
+      this.positionsInterval = setInterval(() => this.loop(), TIME_GRAVITY);
     } else {
-      clearInterval(this.positionsInterval)
+      clearInterval(this.positionsInterval);
     }
+  }
+
+  loop() {
+    this.gravity();
+    this.running();
+    this.jumping();
+    this.draw();
   }
 
   getDirection(key: string) {
@@ -187,7 +174,7 @@ export class GameComponent implements OnInit {
 
       if (0 <= position && position <= this.game.nativeElement.width - PLAYER_DIMENSION.width) {
         player.position.x = position;
-        player.spriteNumber =  (this.game.nativeElement.width / PLAYER_DIMENSION.width) % 6
+        player.spriteNumber = Math.floor(player.position.x / FIGURE_STEP) % FIGURE_QT;
       }
     }
   }
@@ -210,6 +197,20 @@ export class GameComponent implements OnInit {
 
   draw() {
     this.context.clearRect(0, 0, this.game.nativeElement.width, this.game.nativeElement.height);
+    this.context.drawImage(
+      this.cenarios,
+      0, 0,
+      CENARIO[0].width, CENARIO[0].height,
+      0, 0,
+      this.game.nativeElement.width, this.game.nativeElement.height,
+    );
+
+    CENARIO[0].elements.forEach((item) => {
+      item.forEach(posicao => {
+        // this.context.stroke(posicao.x, posicao.y);
+      });
+    });
+
     this.drawPlayer(this.player1)
     this.drawPlayer(this.player2)
   }
@@ -217,8 +218,7 @@ export class GameComponent implements OnInit {
   drawPlayer(player: Player) {
     this.context.drawImage(
       this.sprites,
-      // 5 + SPRITE_POSITION1[player.spriteNumber], 8,
-      5 + SPRITE_POSITION1[0], 8,
+      FIGURE_POSITIONS[player.direction.x][player.spriteNumber], 8,
       FIGURE_DIMENSION.width, FIGURE_DIMENSION.height,
       player.position.x, player.position.y,
       PLAYER_DIMENSION.width, PLAYER_DIMENSION.height
