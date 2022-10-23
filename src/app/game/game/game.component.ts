@@ -95,17 +95,14 @@ export class GameComponent implements OnInit {
 
   playPause() {
     this.play = !this.play
-    // if (this.play){
-    //   this.positionsInterval = setInterval(() => this.loop(), TIME_GRAVITY);
-    // } else {
-    //   clearInterval(this.positionsInterval);
-    // }
   }
 
   loop() {
-    this.gravity();
-    this.refreshPositions();
-    this.draw();
+    if (this.play) {
+      this.gravity();
+      this.refreshPositions();
+      this.draw();
+    }
     window.requestAnimationFrame(this.loop.bind(this));
   }
 
