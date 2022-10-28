@@ -19,8 +19,8 @@ export const CENARIO = [
     width:3974,
     height: 2366,
     elements: [
-      [{x:0, y:200}, {x:200, y:200}, {x:200, y:30}, {x:0, y:30}],
-      [{x:0, y:0}, {x:200, y:0}, {x:200, y:30}, {x:0, y:30}],
+      [{x:42, y:323}, {x:232, y:323}, {x:232, y:360}, {x:42, y:356}, {x:42, y:323}],
+      [{x:42, y:414}, {x:518, y:414}, {x:518, y:442}, {x:42, y:442}, {x:42, y:414}],
     ]
   },
 ];
@@ -28,4 +28,4 @@ export const DIRECTIONS = ['right', 'left'];
 export const GRAVITY = 5;
 export const TIME_GRAVITY = 1000/30;
 export const JUMP_HEIGHT = 100;
-
+export const JUMP_STEP = 5;
