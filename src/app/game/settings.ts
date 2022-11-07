@@ -16,8 +16,8 @@ export const FIGURE_POSITIONS: SpritePosition = {
 };
 export const CENARIO = [
   {
-    width:3974,
-    height: 2366,
+    width:2130,
+    height: 1420,
     elements: [
       [{x:42, y:323}, {x:232, y:323}, {x:232, y:360}, {x:42, y:356}, {x:42, y:323}],
       [{x:42, y:414}, {x:518, y:414}, {x:518, y:442}, {x:42, y:442}, {x:42, y:414}],

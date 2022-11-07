@@ -22,3 +22,8 @@ export interface Player {
   life: number;
   extraLife: number;
 }
+
+export interface Character {
+  name: string;
+  url: string;
+}

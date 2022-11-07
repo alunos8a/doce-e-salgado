@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="card">
+    <div class="title">
+      Selecionar personagem
+    </div>
+
+    <div class="player">
+      <div class="player-select">
+        <div class="buttom-change">
+          <img src="../../../assets/img/left.png" alt="" (click)="changeCharacter('a')">
+        </div>
+        <div class="skin">
+          <div class="name">
+            {{characterDoce.name}}
+          </div>
+
+          <img src="{{characterDoce.url}}" alt="">
+        </div>
+        <div class="buttom-change">
+          <img src="../../../assets/img/right.png" alt="" (click)="changeCharacter('d')">
+        </div>
+      </div>
+      <div class="player-select">
+        <div class="buttom-change">
+          <img src="../../../assets/img/left.png" alt="" (click)="changeCharacter('arrowleft')">
+        </div>
+        <div class="skin">
+          <div class="name">
+            {{characterSalgado.name}}
+          </div>
+
+          <img src="{{characterSalgado.url}}" alt="">
+        </div>
+        <div class="buttom-change">
+          <img src="../../../assets/img/right.png" alt="" (click)="changeCharacter('arrowright')">
+        </div>
+      </div>
+    </div>
+
+    <div [routerLink]="['/game']" class="play">
+      play
+    </div>
+  </div>
+</div>

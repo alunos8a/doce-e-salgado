@@ -101,7 +101,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.sprites.src = './assets/img/SPRITES.png';
-    this.cenarios.src = './assets/img/CENARIOS.png';
+    this.cenarios.src = './assets/img/cenarios/fase1.png';
     this.context = this.game.nativeElement.getContext('2d');
     let maxX = this.game.nativeElement.width - PLAYER_DIMENSION.width;
     let maxY = this.game.nativeElement.height - PLAYER_DIMENSION.height;
@@ -294,12 +294,6 @@ export class GameComponent implements OnInit {
   }
 
   drawPlayer(player: Player) {
-    this.context.fillRect(
-      player.position.x,
-      player.position.y,
-      PLAYER_DIMENSION.width,
-      PLAYER_DIMENSION.height
-    );
     this.context.drawImage(
       this.sprites,
       FIGURE_POSITIONS[player.direction.horizontal ][player.spriteNumber],
