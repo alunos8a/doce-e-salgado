@@ -162,57 +162,44 @@ export class GameComponent implements OnInit {
     }
   }
 
+  collidedLine(player: Player, position1: Position, position2: Position) {
+    let p1 = {x: player.position.x, y: player.position.y};
+    let p2 = {x: player.position.x + PLAYER_DIMENSION.width, y: player.position.y};
+    let p3 = {x: player.position.x  + PLAYER_DIMENSION.width, y: player.position.y + PLAYER_DIMENSION.height};
+    let p4 = {x: player.position.x, y: player.position.y + PLAYER_DIMENSION.height};
+    let topMidpoint = {x: (p1.x + p2.x)/2, y: p1.y};
+    let bottonMidpoint = {x: (p3.x + p4.x)/2, y: p3.y};
+    let leftMidpoint = {x: p1.x, y: (p1.y + p4.y)/2};
+    let rightMidpoint = {x: p2.x, y: (p2.y + p3.y)/2};
+    let playerPoints = [p1, p2, p3, p4];
+
+    for (let i in playerPoints) {
+      let point = playerPoints[i];
+      let betweenPositions = (position1.x < point.x && point.x < position2.x) || (position1.x > point.x && point.x > position2.x);
+
+      if (betweenPositions) {
+        if (betweenPositions){
+            let y = position1.y;
+            if (position1.y != position2.y) {
+              y = position1.y + ((position2.y - position1.y) * (player.position.x - position1.x)) /
+                    (position2.x - position1.x);
+            }
+
+            // if (player)
+          }
+
+      }
+    }
+  }
+
   collidedY(player: Player) {
     let collided = false;
     CENARIO[0].elements.forEach((item) => {
       for (let i = 0; i < item.length - 1; i++) {
         let position1 = {x: item[i].x, y:  item[i].y};
-        let position2 = {x: item[i].x, y:  item[i].y};
+        let position2 = {x: item[i+1].x, y:  item[i+1].y};
 
-        if (item[i].x == item[i + 1].x) {
-          if (item[i].y <= item[i + 1].y) {
-            position2 = {x: item[i + 1].x, y:  item[i + 1].y};
-          } else {
-            position1 = {x: item[i + 1].x, y:  item[i + 1].y};
-          }
-        } else if (item[i].x < item[i + 1].x) {
-          position2 = {x: item[i + 1].x, y:  item[i + 1].y};
-        } else {
-          position1 = {x: item[i + 1].x, y:  item[i + 1].y};
-        }
-
-        if (position1.x != position2.x) {
-          let playerOnObject = position1.x - PLAYER_DIMENSION.width < player.position.x && player.position.x < position2.x;
-          if (playerOnObject) {
-            let y = position1.y;
-
-            if (position1.y != position2.y) {
-              y = position1.y + ((position2.y - position1.y) * (player.position.x - position1.x)) /
-                  (position2.x - position1.x);
-            }
-
-            if (player.position.y + PLAYER_DIMENSION.height >= y && player.position.y + PLAYER_DIMENSION.height <= y + JUMP_STEP) {
-              player.position.y = y - PLAYER_DIMENSION.height;
-              player.jumping = false;
-              collided = true;
-            } else if (player.position.y >= y && player.position.y < y + JUMP_STEP) {
-              player.direction.vertical = 'down';
-            }
-          }
-        } else if (position1.y != position2.y) {
-          let playerInFrontOfTheObject = position1.y - PLAYER_DIMENSION.height < player.position.y && player.position.y <= position2.y;
-          if (playerInFrontOfTheObject) {
-            if (player.direction.vertical == 'right') {
-              if (player.position.x + PLAYER_DIMENSION.width >= position1.x) {
-                player.position.x = position1.x;
-              }
-            } else {
-              if (player.position.x <= position1.x && player.position.x >= position1.x - JUMP_STEP) {
-                player.position.x = position1.x;
-              }
-            }
-          }
-        }
+        this.collidedLine(player, position1, position2)
       }
     });
     return collided;
@@ -255,10 +242,11 @@ export class GameComponent implements OnInit {
         }
       }
     }
-    this.collidedY(player);
+
     if (player.position.y >= this.game.nativeElement.height - PLAYER_DIMENSION.height) {
       player.position.y = this.game.nativeElement.height - PLAYER_DIMENSION.height;
     } else {
+      this.collidedY(player);
       player.position.y += GRAVITY;
     }
   }
@@ -294,6 +282,12 @@ export class GameComponent implements OnInit {
   }
 
   drawPlayer(player: Player) {
+    this.context.fillRect(
+      player.position.x,
+      player.position.y,
+      PLAYER_DIMENSION.width,
+      PLAYER_DIMENSION.height
+    );
     this.context.drawImage(
       this.sprites,
       FIGURE_POSITIONS[player.direction.horizontal ][player.spriteNumber],
