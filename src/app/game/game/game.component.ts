@@ -1,14 +1,11 @@
 import { Position } from './../models';
 import {
   GRAVITY,
-  TIME_GRAVITY,
   FIGURE_DIMENSION,
   FIGURE_POSITIONS,
   JUMP_HEIGHT,
   FIGURE_STEP,
   FIGURE_QT,
-  CENARIO,
-  JUMP_STEP,
 } from './../settings';
 import {
   Component,
@@ -19,6 +16,7 @@ import {
 } from '@angular/core';
 import { Player } from '../models';
 import { PLAYER_DIMENSION, VELOCITY } from '../settings';
+import { CENARIO } from '../cenarios';
 
 type MovementKeys = {
   [key: string]: string;
@@ -51,7 +49,7 @@ export class GameComponent implements OnInit {
     name: '',
     player: 1,
     type: 'salgado',
-    direction: { horizontal: 'left', vertical: 'down' },
+    direction: { horizontal: 'right', vertical: 'down' },
     running: false,
     jumping: false,
     spriteNumber: 0,
@@ -62,7 +60,7 @@ export class GameComponent implements OnInit {
     extraLife: 1,
   };
 
-  play = false;
+  play = true;
   positionsInterval: any;
 
   @HostListener('body:keydown.space', ['$event']) onKeyDownSpace =
@@ -103,16 +101,8 @@ export class GameComponent implements OnInit {
     this.sprites.src = './assets/img/SPRITES.png';
     this.cenarios.src = './assets/img/cenarios/fase1.png';
     this.context = this.game.nativeElement.getContext('2d');
-    let maxX = this.game.nativeElement.width - PLAYER_DIMENSION.width;
-    let maxY = this.game.nativeElement.height - PLAYER_DIMENSION.height;
-    this.player1.position = {
-      x: Math.floor(Math.random() * maxX),
-      y: Math.floor(Math.random() * maxY),
-    };
-    this.player2.position = {
-      x: Math.floor(Math.random() * maxX),
-      y: Math.floor(Math.random() * maxY),
-    };
+    this.player1.position = {x: 42, y: 400};
+    this.player2.position = {x: 75, y: 400};
     this.loop();
   }
 
@@ -155,41 +145,72 @@ export class GameComponent implements OnInit {
   stopMovement(key: string) {
     if (key in this.movementKeysPlayer1) {
       this.player1.running = false;
-      this.player1.jumping = false;
+      this.player1.direction.vertical = 'down';
     } else if (key in this.movementKeysPlayer2) {
       this.player2.running = false;
-      this.player2.jumping = false;
+      this.player2.direction.vertical = 'down';
     }
   }
 
-  collidedLine(player: Player, position1: Position, position2: Position) {
+  collidedLine(player: Player, position1: Position, position2: Position, direction: string) {
     let p1 = {x: player.position.x, y: player.position.y};
     let p2 = {x: player.position.x + PLAYER_DIMENSION.width, y: player.position.y};
     let p3 = {x: player.position.x  + PLAYER_DIMENSION.width, y: player.position.y + PLAYER_DIMENSION.height};
     let p4 = {x: player.position.x, y: player.position.y + PLAYER_DIMENSION.height};
-    let topMidpoint = {x: (p1.x + p2.x)/2, y: p1.y};
-    let bottonMidpoint = {x: (p3.x + p4.x)/2, y: p3.y};
-    let leftMidpoint = {x: p1.x, y: (p1.y + p4.y)/2};
-    let rightMidpoint = {x: p2.x, y: (p2.y + p3.y)/2};
+    let midpoint = {x: (p1.x + p2.x)/2, y: (p1.y + p4.y)/2};
     let playerPoints = [p1, p2, p3, p4];
 
-    for (let i in playerPoints) {
-      let point = playerPoints[i];
-      let betweenPositions = (position1.x < point.x && point.x < position2.x) || (position1.x > point.x && point.x > position2.x);
+    if (direction == 'vertical') {
+      for (let i in playerPoints) {
+        let point = playerPoints[i];
+
+
+          let betweenPositions = (position1.x < point.x && point.x < position2.x) || (position1.x > point.x && point.x > position2.x);
+
+          if (betweenPositions) {
+            let y = position1.y + ((position2.y - position1.y) * (point.x - position1.x)) / (position2.x - position1.x);
+
+            if ((p1.y < y && y < midpoint.y) || (p2.y < y && y < midpoint.y)) {
+              player.direction.vertical = 'down';
+              break
+            } else if ((p4.y >= y && y > midpoint.y) || (p3.y >= y && y > midpoint.y)) {
+              player.position.y = y - PLAYER_DIMENSION.height;
+              return true
+            }
+          }
+        }
+    } else if (direction == 'horizontal' && position1.x == position2.x) {
+      let betweenPositions = (position1.y < p1.y && p1.y < position2.y) || (position1.y > p1.y && p1.y > position2.y) ||
+                             (position1.y < p4.y && p4.y < position2.y) || (position1.y >= p4.y && p4.y > position2.y);
 
       if (betweenPositions) {
-        if (betweenPositions){
-            let y = position1.y;
-            if (position1.y != position2.y) {
-              y = position1.y + ((position2.y - position1.y) * (player.position.x - position1.x)) /
-                    (position2.x - position1.x);
-            }
-
-            // if (player)
-          }
-
+        let x = position1.x;
+        if ((p1.x < x && x < midpoint.x) || (p4.x < x && x < midpoint.x)) {
+          player.position.x = x;
+          return true
+        } else if ((p2.x > x && x > midpoint.x) || (p3.x > x && x > midpoint.x)) {
+          player.position.x = x - PLAYER_DIMENSION.width;
+          return true
+        }
       }
     }
+    return false
+  }
+
+  collidedX(player: Player) {
+    let collided = false;
+    CENARIO[0].elements.forEach((item) => {
+      for (let i = 0; i < item.length - 1; i++) {
+        let position1 = {x: item[i].x, y:  item[i].y};
+        let position2 = {x: item[i+1].x, y:  item[i+1].y};
+
+        if (this.collidedLine(player, position1, position2, 'horizontal')) {
+          collided = true;
+          break
+        }
+      }
+    });
+    return collided;
   }
 
   collidedY(player: Player) {
@@ -199,7 +220,10 @@ export class GameComponent implements OnInit {
         let position1 = {x: item[i].x, y:  item[i].y};
         let position2 = {x: item[i+1].x, y:  item[i+1].y};
 
-        this.collidedLine(player, position1, position2)
+        if (this.collidedLine(player, position1, position2, 'vertical')) {
+          collided = true;
+          break
+        }
       }
     });
     return collided;
@@ -214,7 +238,7 @@ export class GameComponent implements OnInit {
   }
 
   setPlayerPositionX(player: Player) {
-    if (player.running || player.jumping) {
+    if (player.running) {
       let position = player.position.x;
       if (player.direction.horizontal  == 'right') {
         position += VELOCITY;
@@ -230,6 +254,7 @@ export class GameComponent implements OnInit {
         player.spriteNumber =
           Math.floor(player.position.x / FIGURE_STEP) % FIGURE_QT;
       }
+      this.collidedX(player)
     }
   }
 
@@ -246,8 +271,11 @@ export class GameComponent implements OnInit {
     if (player.position.y >= this.game.nativeElement.height - PLAYER_DIMENSION.height) {
       player.position.y = this.game.nativeElement.height - PLAYER_DIMENSION.height;
     } else {
-      this.collidedY(player);
-      player.position.y += GRAVITY;
+      if (!this.collidedY(player)) {
+        player.position.y += GRAVITY;
+      } else {
+        player.jumping = false;
+      }
     }
   }
 
