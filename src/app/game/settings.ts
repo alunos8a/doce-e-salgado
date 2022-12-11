@@ -4,7 +4,7 @@ type SpritePosition = {
 }
 
 
-export const VELOCITY = 5;
+export const VELOCITY = 7;
 export const PLAYER_DIMENSION = {width: 32.5, height: 50};
 export const FIGURE_DIMENSION = {width: 200, height: 331};
 export const FIGURE_QT = 6;
