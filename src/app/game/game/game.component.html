@@ -1,4 +1,9 @@
 <div class="container">
+  <div class="controls">
+    <div class="control">
+      <canvas id="control1" #control1 width="100" height="100"></canvas>
+    </div>
+
     <div class="info">
       <div class="teclas">
         <div class="teclado">
@@ -12,25 +17,40 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="game">
-      <div>
-        <canvas #game class="canvas" width="750" height="500"></canvas>
+  <div class="game">
+    <canvas #game class="canvas" width="750" height="500"></canvas>
+
+    <div class="modal" *ngIf="!play">
+      <div class="modal-content">
+        <div>
+          <h1>DOCE E SALGADO</h1>
+        </div>
+        <div>engrenagem</div>
+        <div>
+          <div class="play" (click)="playPause()">play</div>
+        </div>
+        <div>ilustracçoes</div>
       </div>
-      <div class="modal" *ngIf="!play">
-        <div class="modal-content">
-          <div>
-            <h1>DOCE E SALGADO</h1>
+    </div>
+    <div class="modal" *ngIf="question">
+      <div class="modal-content-question">
+        <div class="card">
+          <div class="pergunta">
+            <p>{{questao.pergunta}}</p>
           </div>
-          <div>engrenagem</div>
-          <div>
-            <div class="play" (click)="playPause()">play</div>
-          </div>
-          <div>
-            ilustracçoes
+          <div class="opcoes">
+            <p *ngFor="let opcao of questao.opcoes" (click)="correctAnswer($event.target)">{{opcao}}</p>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <canvas id="control2" #control1 width="100" height="100"></canvas>
     </div>
 
     <div class="info">
@@ -46,4 +66,5 @@
         </div>
       </div>
     </div>
-  </div>
+
+</div>

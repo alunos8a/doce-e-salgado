@@ -1,0 +1,62 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  height: 800px;
+  width: 1200px;
+  padding: 10px;
+  border-radius: 5px;
+  background-image: url('/assets/img/home-screen.png');
+  background-size: cover;
+}
+
+.settings {
+  height: auto;
+}
+
+.play {
+  display: block;
+  position: relative;
+  z-index: 1;
+  top: 300px;
+  font-size: large;
+  height: 100px;
+  width: 100%;
+}
+
+.settings {
+  display: block;
+  position: relative;
+  z-index: 1;
+  left: 0;
+  top: 0px;
+  font-size: large;
+  height: 100px;
+  width: 100%;
+}
+
+.button-play {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.exit {
+  display: block;
+  position: relative;
+  z-index: 1;
+  top: 600px;
+  left: 0px;
+  font-size: large;
+  height: 100px;
+  width: 100%;
+}
